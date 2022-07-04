@@ -4,7 +4,9 @@ const {
   createRef,
   formatComments,
 } = require("../helpers/utils");
+
 const db = require("../connection");
+
 const { dropTables, createTables } = require("../helpers/manage-tables");
 
 const seed = async ({ topicData, userData, articleData, commentData }) => {
@@ -15,6 +17,7 @@ const seed = async ({ topicData, userData, articleData, commentData }) => {
     "INSERT INTO topics (slug, description) VALUES %L RETURNING *;",
     topicData.map(({ slug, description }) => [slug, description])
   );
+
   const topicsPromise = db
     .query(insertTopicsQueryStr)
     .then((result) => result.rows);
@@ -27,6 +30,7 @@ const seed = async ({ topicData, userData, articleData, commentData }) => {
       avatar_url,
     ])
   );
+
   const usersPromise = db
     .query(insertUsersQueryStr)
     .then((result) => result.rows);
