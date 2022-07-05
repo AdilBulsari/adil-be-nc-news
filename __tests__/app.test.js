@@ -63,3 +63,28 @@ describe("GET /api/articles/:article_id", () => {
       });
   });
 });
+
+describe("PATCH /api/articles/:article_id", () => {
+  test("200 :patch article votes", () => {
+    const updateArticleVote = { inc_votes: -100 };
+
+    return request(app)
+      .patch("/api/articles/12")
+      .send(updateArticleVote)
+      .expect(200)
+      .then((res) => {
+        console.log(res.body);
+        expect(res.body).toEqual({
+          article: {
+            article_id: 12,
+            title: "Moustache",
+            topic: "mitch",
+            author: "butter_bridge",
+            body: "Have you seen the size of that thing?",
+            created_at: "2020-10-11T11:24:00.000Z",
+            votes: -100,
+          },
+        });
+      });
+  });
+});
