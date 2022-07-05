@@ -39,3 +39,27 @@ describe("App test", () => {
     });
   });
 });
+
+describe("GET /api/articles/:article_id", () => {
+  test("200 :returns article by id", () => {
+    const id = [
+      {
+        article_id: 12,
+        title: "Moustache",
+        topic: "mitch",
+        author: "butter_bridge",
+        body: "Have you seen the size of that thing?",
+        created_at: "2020-10-11T11:24:00.000Z",
+        votes: 0,
+      },
+    ];
+    return request(app)
+      .get("/api/articles/12")
+      .send(id)
+      .expect(200)
+      .then((res) => {
+        console.log(res.body);
+        expect(res.body).toEqual({ topic: id });
+      });
+  });
+});
