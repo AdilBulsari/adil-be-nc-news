@@ -128,3 +128,7 @@ describe.only("/api/users", () => {
       });
   });
 });
+
+describe.only("GET (comment count)", () => {
+  test("/api/articles/:article_id", () => {});
+});

@@ -12,4 +12,6 @@ app.get("/api/articles/:article_id", getArticleByiD);
 app.patch("/api/articles/:article_id", patchArticle);
 app.get("/api/users", getUsers);
 
+// app.get("/api/articles/:article_id", getCommentByArticleId);
+
 module.exports = app;
