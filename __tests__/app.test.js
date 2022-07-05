@@ -30,10 +30,9 @@ describe("App test", () => {
       ];
       return request(app)
         .get("/api/topics")
-        .send(obj)
+
         .expect(200)
         .then((res) => {
-          console.log(res.body);
           expect(res.body).toEqual({ topic: obj });
         });
     });
@@ -58,7 +57,6 @@ describe("GET /api/articles/:article_id", () => {
       .send(id)
       .expect(200)
       .then((res) => {
-        console.log(res.body);
         expect(res.body).toEqual({ topic: id });
       });
   });
@@ -73,7 +71,6 @@ describe("PATCH /api/articles/:article_id", () => {
       .send(updateArticleVote)
       .expect(200)
       .then((res) => {
-        console.log(res.body);
         expect(res.body).toEqual({
           article: {
             article_id: 12,
@@ -85,6 +82,49 @@ describe("PATCH /api/articles/:article_id", () => {
             votes: -100,
           },
         });
+      });
+  });
+});
+
+describe.only("/api/users", () => {
+  test("200 : get all users with array of object", () => {
+    const expectedData = [
+      {
+        avatar_url:
+          "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg",
+        name: "jonny",
+        username: "butter_bridge",
+      },
+      {
+        avatar_url:
+          "https://avatars2.githubusercontent.com/u/24604688?s=460&v=4",
+        name: "sam",
+        username: "icellusedkars",
+      },
+      {
+        avatar_url:
+          "https://avatars2.githubusercontent.com/u/24394918?s=400&v=4",
+        name: "paul",
+        username: "rogersop",
+      },
+      {
+        avatar_url:
+          "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
+        name: "do_nothing",
+        username: "lurker",
+      },
+    ];
+
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body: { users } }) => {
+        users.forEach((user) => {
+          expect(typeof user.username).toBe("string");
+          expect(typeof user.avatar_url).toBe("string");
+          expect(typeof user.name).toBe("string");
+        });
+        expect(users).toEqual(expectedData);
       });
   });
 });
