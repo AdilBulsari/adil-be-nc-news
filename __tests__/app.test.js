@@ -37,6 +37,14 @@ describe("App test", () => {
           expect(res.body).toEqual({ topic: obj });
         });
     });
+    test("route that does not exist: 404 Not Found", () => {
+      return request(app)
+        .get("/api/topicz")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("does not exist");
+        });
+    });
   });
 });
 
