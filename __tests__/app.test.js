@@ -68,4 +68,20 @@ describe("/api/articles/:article_id", () => {
         expect(typeof article.total_comments).toBe("number");
       });
   });
+  test("status:400, responds with an error message when passed a bad user ID", () => {
+    return request(app)
+      .get("/api/articles/notAnID")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("id must be a number");
+      });
+  });
+  test("status:404, responds with an error message does not exist", () => {
+    return request(app)
+      .get("/api/articles/99999")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("does not exist");
+      });
+  });
 });
