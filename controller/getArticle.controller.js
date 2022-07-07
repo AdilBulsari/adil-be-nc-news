@@ -1,3 +1,4 @@
+
 const { fetchArticleById } = require("../model/fetchArticle.model");
 
 exports.getArticleById = (req, res, next) => {
@@ -10,4 +11,6 @@ exports.getArticleById = (req, res, next) => {
     .catch((err) => {
       next(err);
     });
+
+
 };

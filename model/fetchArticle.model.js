@@ -1,5 +1,6 @@
 const db = require("../db/connection");
 
+
 exports.fetchArticleById = (id) => {
   if (isNaN(Number(id))) {
     return Promise.reject({
@@ -25,5 +26,7 @@ exports.fetchArticleById = (id) => {
         });
       }
       return article.rows[0];
+
+
     });
 };

@@ -1,5 +1,6 @@
 const express = require("express");
 const { getTopic } = require("./controller/getTopic.controller");
+const { getArticleById } = require("./controller/getArticle.controller");
 
 const { getArticleById } = require("./controller/getArticle.controller");
 
@@ -26,5 +27,6 @@ app.use((err, req, res, next) => {
   console.log(err);
   res.status(500).send({ msg: "Internal Server Error" });
 });
+
 
 module.exports = app;
