@@ -201,3 +201,109 @@ describe("GET : /api/articles object including total comments", () => {
       });
   });
 });
+
+describe("Ticket 9 : Get article Comment", () => {
+  test("200 : Array of comment of particular article id", () => {
+    const expectedCommentArray = [
+      {
+        comment_id: 2,
+        votes: 14,
+        created_at: "2020-10-31T03:03:00.000Z",
+        author: "butter_bridge",
+        body: "The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.",
+      },
+      {
+        comment_id: 3,
+        votes: 100,
+        created_at: "2020-03-01T01:13:00.000Z",
+        author: "icellusedkars",
+        body: "Replacing the quiet elegance of the dark suit and tie with the casual indifference of these muted earth tones is a form of fashion suicide, but, uh, call me crazy — onyou it works.",
+      },
+      {
+        comment_id: 4,
+        votes: -100,
+        created_at: "2020-02-23T12:01:00.000Z",
+        author: "icellusedkars",
+        body: " I carry a log — yes. Is it funny to you? It is not to me.",
+      },
+      {
+        comment_id: 5,
+        votes: 0,
+        created_at: "2020-11-03T21:00:00.000Z",
+        author: "icellusedkars",
+        body: "I hate streaming noses",
+      },
+      {
+        comment_id: 6,
+        votes: 0,
+        created_at: "2020-04-11T21:02:00.000Z",
+        author: "icellusedkars",
+        body: "I hate streaming eyes even more",
+      },
+      {
+        comment_id: 7,
+        votes: 0,
+        created_at: "2020-05-15T20:19:00.000Z",
+        author: "icellusedkars",
+        body: "Lobster pot",
+      },
+      {
+        comment_id: 8,
+        votes: 0,
+        created_at: "2020-04-14T20:19:00.000Z",
+        author: "icellusedkars",
+        body: "Delicious crackerbreads",
+      },
+      {
+        comment_id: 9,
+        votes: 0,
+        created_at: "2020-01-01T03:08:00.000Z",
+        author: "icellusedkars",
+        body: "Superficially charming",
+      },
+      {
+        comment_id: 12,
+        votes: 0,
+        created_at: "2020-03-02T07:10:00.000Z",
+        author: "icellusedkars",
+        body: "Massive intercranial brain haemorrhage",
+      },
+      {
+        comment_id: 13,
+        votes: 0,
+        created_at: "2020-06-15T10:25:00.000Z",
+        author: "icellusedkars",
+        body: "Fruit pastilles",
+      },
+      {
+        comment_id: 18,
+        votes: 16,
+        created_at: "2020-07-21T00:20:00.000Z",
+        author: "butter_bridge",
+        body: "This morning, I showered for nine minutes.",
+      },
+    ];
+    return request(app)
+      .get("/api/articles/1/comments")
+      .expect(200)
+      .then((res) => {
+        expect(res.body).toEqual(expectedCommentArray);
+      });
+  });
+  test("404 : /api/9999 -> route that does not exist: 404 Not Found", () => {
+    return request(app)
+      .get("/api/articles/9999/comments")
+      .expect(404)
+      .then(({ body: { message } }) => {
+        expect(message).toBe("not found");
+      });
+  });
+  test("422 : /api/articlezz -> invalid path", () => {
+    return request(app)
+      .get("/api/articles/articlezz/comments")
+      .expect(422)
+      .then(({ body: { message } }) => {
+        expect(message).toBe("Invalid path");
+      });
+  });
+});
