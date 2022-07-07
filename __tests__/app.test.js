@@ -30,7 +30,6 @@ describe("App test", () => {
       ];
       return request(app)
         .get("/api/topics")
-
         .expect(200)
         .then((res) => {
           expect(res.body).toEqual({ topic: topics });
@@ -39,9 +38,9 @@ describe("App test", () => {
   });
 });
 
-describe.only("GET /api/articles/:article_id", () => {
+describe("GET /api/articles/:article_id", () => {
   test("200 :returns article by id", () => {
-    const article = {
+    const expectedArticle = {
       article_id: 12,
       title: "Moustache",
       topic: "mitch",
@@ -55,13 +54,13 @@ describe.only("GET /api/articles/:article_id", () => {
       .get("/api/articles/12")
       .expect(200)
 
-      .then(({ body: { topic } }) => {
-        expect(typeof topic.article_id).toBe("number");
-        expect(typeof topic.title).toBe("string");
-        expect(typeof topic.author).toEqual("string");
-        expect(typeof topic.votes).toEqual("number");
-        expect(typeof topic.created_at).toEqual("string");
-        expect(topic).toEqual(article);
+      .then(({ body: { article } }) => {
+        expect(typeof article.article_id).toBe("number");
+        expect(typeof article.title).toBe("string");
+        expect(typeof article.author).toEqual("string");
+        expect(typeof article.votes).toEqual("number");
+        expect(typeof article.created_at).toEqual("string");
+        expect(article).toEqual(expectedArticle);
       });
   });
 });
@@ -90,7 +89,7 @@ describe("PATCH /api/articles/:article_id", () => {
   });
 });
 
-describe.only("/api/users", () => {
+describe("/api/users", () => {
   test("200 : get all users with array of object", () => {
     const expectedData = [
       {
