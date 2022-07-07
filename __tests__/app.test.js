@@ -74,28 +74,8 @@ describe("GET : /api/articles object including total comments", () => {
       });
   });
 
-  test("200 : returns object with all major fields", () => {
+  test("200 : returns object with all major fields sort by descending", () => {
     const expectedData = [
-      {
-        article_id: 6,
-        title: "A",
-        topic: "mitch",
-        author: "icellusedkars",
-        body: "Delicious tin of cat food",
-        created_at: "2020-10-18T01:00:00.000Z",
-        votes: 0,
-        comment_count: 1,
-      },
-      {
-        article_id: 9,
-        title: "They're not exactly dogs, are they?",
-        topic: "mitch",
-        author: "butter_bridge",
-        body: "Well? Think about it.",
-        created_at: "2020-06-06T09:10:00.000Z",
-        votes: 0,
-        comment_count: 2,
-      },
       {
         article_id: 3,
         title: "Eight pug gifs that remind me of mitch",
@@ -105,6 +85,16 @@ describe("GET : /api/articles object including total comments", () => {
         created_at: "2020-11-03T09:12:00.000Z",
         votes: 0,
         comment_count: 2,
+      },
+      {
+        article_id: 6,
+        title: "A",
+        topic: "mitch",
+        author: "icellusedkars",
+        body: "Delicious tin of cat food",
+        created_at: "2020-10-18T01:00:00.000Z",
+        votes: 0,
+        comment_count: 1,
       },
       {
         article_id: 5,
@@ -125,6 +115,16 @@ describe("GET : /api/articles object including total comments", () => {
         created_at: "2020-07-09T20:11:00.000Z",
         votes: 100,
         comment_count: 11,
+      },
+      {
+        article_id: 9,
+        title: "They're not exactly dogs, are they?",
+        topic: "mitch",
+        author: "butter_bridge",
+        body: "Well? Think about it.",
+        created_at: "2020-06-06T09:10:00.000Z",
+        votes: 0,
+        comment_count: 2,
       },
     ];
     return request(app)
