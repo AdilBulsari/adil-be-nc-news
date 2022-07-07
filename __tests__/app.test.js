@@ -74,7 +74,7 @@ describe("GET : /api/articles object including total comments", () => {
       });
   });
 
-  test("200 : returns object with all major fields sort by descending", () => {
+  test("200 : returns object with all major fields sort by descending DEFAULT", () => {
     const expectedData = [
       {
         article_id: 3,
