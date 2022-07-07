@@ -33,7 +33,6 @@ describe("App test", () => {
         .send(obj)
         .expect(200)
         .then((res) => {
-          console.log(res.body);
           expect(res.body).toEqual({ topic: obj });
         });
     });

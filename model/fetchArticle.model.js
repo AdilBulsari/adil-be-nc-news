@@ -10,22 +10,20 @@ exports.fetchArticleById = (id) => {
 
   return db
     .query(
-      `SELECT articles.*,COUNT(comments.article_id) AS TOTAL_COMMENTS
+      `SELECT articles.*,CAST(COUNT(comments.article_id) AS INTEGER) AS TOTAL_COMMENTS
        FROM articles LEFT JOIN comments
        ON articles.article_id = comments.article_id 
        WHERE articles.article_id=$1
        GROUP BY articles.article_id ;`,
       [id]
     )
-    .then((data) => {
-      if (data.rowCount === 0) {
+    .then((article) => {
+      if (article.rowCount === 0) {
         return Promise.reject({
           status: 404,
           err: "does not exist",
         });
       }
-      const updated = { ...data.rows[0] };
-      updated["total_comments"] = Number(updated.total_comments);
-      return updated;
+      return article.rows[0];
     });
 };
