@@ -33,7 +33,6 @@ describe("App test", () => {
         .expect(200)
         .then((res) => {
           expect(res.body).toEqual({ topic: topics });
-
         });
     });
     test("route that does not exist: 404 Not Found", () => {
@@ -93,14 +92,15 @@ describe("/api/articles/:article_id", () => {
   });
 });
 
-describe.only("GET /api/articles/:article_id", () => {
+describe("GET /api/articles/:article_id", () => {
   test("200 :returns article by id", () => {
-    const article = {
+    const expectedArticle = {
       article_id: 12,
       title: "Moustache",
       topic: "mitch",
       author: "butter_bridge",
       body: "Have you seen the size of that thing?",
+      total_comments: 0,
       created_at: "2020-10-11T11:24:00.000Z",
       votes: 0,
     };
@@ -108,13 +108,127 @@ describe.only("GET /api/articles/:article_id", () => {
     return request(app)
       .get("/api/articles/12")
       .expect(200)
-      .then(({ body: { topic } }) => {
-        expect(typeof topic.article_id).toBe("number");
-        expect(typeof topic.title).toBe("string");
-        expect(typeof topic.author).toEqual("string");
-        expect(typeof topic.votes).toEqual("number");
-        expect(typeof topic.created_at).toEqual("string");
-        expect(topic).toEqual(article);
+
+      .then(({ body: { article } }) => {
+        expect(typeof article.article_id).toBe("number");
+        expect(typeof article.title).toBe("string");
+        expect(typeof article.author).toEqual("string");
+        expect(typeof article.votes).toEqual("number");
+        expect(typeof article.created_at).toEqual("string");
+        expect(article).toEqual(expectedArticle);
+      });
+  });
+});
+
+describe("PATCH /api/articles/:article_id", () => {
+  test("200 :patch article votes", () => {
+    const updateArticleVote = { inc_votes: -100 };
+
+    return request(app)
+      .patch("/api/articles/12")
+      .send(updateArticleVote)
+      .expect(200)
+      .then((res) => {
+        expect(res.body).toEqual({
+          article: {
+            article_id: 12,
+            title: "Moustache",
+            topic: "mitch",
+            author: "butter_bridge",
+            body: "Have you seen the size of that thing?",
+            created_at: "2020-10-11T11:24:00.000Z",
+            votes: -100,
+          },
+        });
+      });
+  });
+
+  test("status:404, responds with an error message when id does not exist", () => {
+    const updateArticleVote = { inc_votes: -100 };
+    return request(app)
+      .patch("/api/articles/99999")
+      .send(updateArticleVote)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("does not exist");
+      });
+  });
+  test("status:400, responds with an error message when passed invalid id", () => {
+    const updateArticleVote = { inc_votes: -100 };
+    return request(app)
+      .patch("/api/articles/not-an-id")
+      .send(updateArticleVote)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("enter valid id..");
+      });
+  });
+
+  test("422 : /api/articles/1  => { inc_votes: 'not a number' }", () => {
+    const updateArticleVote = { inc_votes: "not-a-number" };
+    return request(app)
+      .patch("/api/articles/1")
+      .send(updateArticleVote)
+      .expect(422)
+      .then(({ body }) => {
+        expect(body.msg).toBe("enter valid vote number");
+      });
+  });
+
+  test("415 : /api/articles/1  => {  }", () => {
+    return request(app)
+      .patch("/api/articles/1")
+      .send({})
+      .expect(415)
+      .then(({ body }) => {
+        expect(body.msg).toBe("empty body");
+      });
+  });
+});
+
+describe("/api/users", () => {
+  test("200 : get all users with array of object", () => {
+    const expectedData = [
+      {
+        avatar_url:
+          "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg",
+        name: "jonny",
+        username: "butter_bridge",
+      },
+      {
+        avatar_url:
+          "https://avatars2.githubusercontent.com/u/24604688?s=460&v=4",
+        name: "sam",
+        username: "icellusedkars",
+      },
+      {
+        avatar_url:
+          "https://avatars2.githubusercontent.com/u/24394918?s=400&v=4",
+        name: "paul",
+        username: "rogersop",
+      },
+      {
+        avatar_url:
+          "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
+        name: "do_nothing",
+        username: "lurker",
+      },
+    ];
+
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body: { users } }) => {
+        if (users.length === 0) {
+          return;
+        }else{
+          users.forEach((user) => {
+            expect(typeof user.username).toBe("string");
+            expect(typeof user.avatar_url).toBe("string");
+            expect(typeof user.name).toBe("string");
+          });
+          expect(users).toEqual(expectedData);
+        }
       });
   });
 });
