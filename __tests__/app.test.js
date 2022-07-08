@@ -313,6 +313,25 @@ describe("POST /api/articles/:article_id/comments", () => {
     username: "rogersop",
     body: "Lobster Pot",
   };
+
+  test("415 : Invalid body /missing properties", () => {
+    const invalidDataBody = {
+      1: "rogersop",
+      2: "lobster Pot",
+    };
+    const missingDataBody = {
+      1: "rogersop",
+    };
+
+    return request(app)
+      .post("/api/articles/4/comments")
+      .send(invalidDataBody)
+      .expect(415)
+      .then(({ body: { message } }) => {
+        expect(message).toBe("Unsupported Data/Body sent");
+      });
+  });
+
   test("200 : send request body with username and body", () => {
     return request(app)
       .post("/api/articles/4/comments")
@@ -330,6 +349,7 @@ describe("POST /api/articles/:article_id/comments", () => {
         );
       });
   });
+
   test("422 : Invalid article id /api/articles/not-an-id/comments", () => {
     return request(app)
       .post("/api/articles/not-an-id/comments")

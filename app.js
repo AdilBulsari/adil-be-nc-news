@@ -23,7 +23,6 @@ app.use("*", (req, res) => {
 app.use((err, req, res, next) => {
   if (err.code == "23503") {
     res.status(400).send({ message: "Bad Request" });
-    // next(err);
   }
   if (err.status && err.message) {
     res.status(err.status).send({ message: err.message });
