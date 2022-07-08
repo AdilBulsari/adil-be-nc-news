@@ -5,13 +5,16 @@ const {
   getAllArticles,
   getArticleComment,
 } = require("./controller/articles.controller");
-
+const { postCommentByArticleId } = require("./controller/comments.controller");
 const app = express();
+app.use(express.json());
 
 app.get("/api/topics", getTopic);
 app.get("/api/articles/:article_id", getArticleById);
 app.get("/api/articles", getAllArticles);
 app.get("/api/articles/:article_id/comments", getArticleComment);
+
+app.post("/api/articles/:article_id/comments", postCommentByArticleId);
 
 // app.use(err,req,res,nec)
 app.use((err, req, res, next) => {
