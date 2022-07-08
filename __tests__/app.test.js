@@ -314,22 +314,12 @@ describe.only("POST /api/articles/:article_id/comments", () => {
       username: "rogersop",
       body: "Lobster Pot",
     };
-    const expectedPostedComment = {
-      comment_id: 19,
-      body: "Lobster Pot",
-      article_id: 4,
-      author: "rogersop",
-      votes: 0,
-      // created_at: "2022-07-08T01:28:17.229Z",
-    };
 
     return request(app)
       .post("/api/articles/4/comments")
       .send(commentToPost)
       .expect(200)
       .then(({ body: { postedComment } }) => {
-        console.log(postedComment);
-        // expect(res.body).toEqual(commentToPost);
         expect(postedComment).toEqual(
           expect.objectContaining({
             comment_id: expect.any(Number),

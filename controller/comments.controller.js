@@ -8,12 +8,7 @@ exports.postCommentByArticleId = (req, res, next) => {
 
   addCommentByArticleId(article_id, commentToPost)
     .then((postedComment) => {
-      console.log(postedComment);
       res.status(200).send({ postedComment });
-      //   res.status(200).send({
-      //     body: data["body"],
-      //     author: data["author"],
-      //   });
     })
     .catch((err) => {
       next(err);
