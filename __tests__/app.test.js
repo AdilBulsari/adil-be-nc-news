@@ -308,13 +308,12 @@ describe("Ticket 9 : Get article Comment", () => {
   });
 });
 
-describe.only("POST /api/articles/:article_id/comments", () => {
+describe("POST /api/articles/:article_id/comments", () => {
+  const commentToPost = {
+    username: "rogersop",
+    body: "Lobster Pot",
+  };
   test("200 : send request body with username and body", () => {
-    const commentToPost = {
-      username: "rogersop",
-      body: "Lobster Pot",
-    };
-
     return request(app)
       .post("/api/articles/4/comments")
       .send(commentToPost)
@@ -322,13 +321,32 @@ describe.only("POST /api/articles/:article_id/comments", () => {
       .then(({ body: { postedComment } }) => {
         expect(postedComment).toEqual(
           expect.objectContaining({
-            comment_id: expect.any(Number),
-            body: expect.any(String),
-            article_id: expect.any(Number),
-            author: expect.any(String),
-            votes: expect.any(Number),
+            comment_id: 19,
+            body: "Lobster Pot",
+            article_id: 4,
+            author: "rogersop",
+            votes: 0,
           })
         );
+      });
+  });
+  test("422 : Invalid article id /api/articles/not-an-id/comments", () => {
+    return request(app)
+      .post("/api/articles/not-an-id/comments")
+      .send(commentToPost)
+      .expect(422)
+      .then(({ body: { message } }) => {
+        expect(message).toBe("Invalid id");
+      });
+  });
+
+  test("400 : bad request /api/articles/99999/comments", () => {
+    return request(app)
+      .post("/api/articles/99999/comments")
+      .send(commentToPost)
+      .expect(400)
+      .then(({ body: { message } }) => {
+        expect(message).toBe("Bad Request");
       });
   });
 });

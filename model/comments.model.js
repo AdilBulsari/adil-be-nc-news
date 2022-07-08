@@ -2,12 +2,27 @@ const db = require("../db/connection");
 
 exports.addCommentByArticleId = (article_id, commentToPost) => {
   const { username, body } = commentToPost;
-  //   if (isNaN(Number(article_id))) {
-  //     return Promise.reject({
-  //       msg: "Invalid Id",
-  //       status: 422,
-  //     });
-  //   }
+
+  if (isNaN(Number(article_id))) {
+    return Promise.reject({
+      message: "Invalid id",
+      status: 422,
+    });
+  }
+  //   return db
+  //     .query(
+  //       `
+  //   SELECT * FROM articles WHERE article_id = $1;
+  //   `,
+  //       [article_id]
+  //     )
+  //     .then((data) => {
+  //       if (data.rowCount === 0) {
+  //         return Promise.reject({
+  //           message: "not found",
+  //           status: 404,
+  //         });
+  //       } else {
   return db
     .query(
       `
