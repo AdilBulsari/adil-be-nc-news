@@ -1,7 +1,19 @@
 const db = require("../db/connection");
 
 exports.addCommentByArticleId = (article_id, commentToPost) => {
+  const commentReqBody = Object.keys(commentToPost);
   const { username, body } = commentToPost;
+
+  if (
+    commentReqBody.length < 2 ||
+    commentReqBody[0] !== "username" ||
+    typeof commentReqBody[0] !== "string"
+  ) {
+    return Promise.reject({
+      message: "Unsupported Data/Body sent",
+      status: 415,
+    });
+  }
 
   if (isNaN(Number(article_id))) {
     return Promise.reject({
@@ -9,20 +21,6 @@ exports.addCommentByArticleId = (article_id, commentToPost) => {
       status: 422,
     });
   }
-  //   return db
-  //     .query(
-  //       `
-  //   SELECT * FROM articles WHERE article_id = $1;
-  //   `,
-  //       [article_id]
-  //     )
-  //     .then((data) => {
-  //       if (data.rowCount === 0) {
-  //         return Promise.reject({
-  //           message: "not found",
-  //           status: 404,
-  //         });
-  //       } else {
   return db
     .query(
       `

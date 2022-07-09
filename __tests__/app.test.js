@@ -21,7 +21,7 @@ beforeAll(() => {
 afterAll(() => db.end());
 
 describe("App test", () => {
-  describe("GET /api/topics", () => {
+  xdescribe("GET /api/topics", () => {
     test("200 :returns topic", () => {
       const topics = [
         { slug: "mitch", description: "The man, the Mitch, the legend" },
@@ -46,7 +46,7 @@ describe("App test", () => {
   });
 });
 
-describe("/api/articles/:article_id", () => {
+xdescribe("/api/articles/:article_id", () => {
   const expectedArticle = {
     article_id: 1,
     title: "Living in the shadow of a great man",
@@ -92,7 +92,7 @@ describe("/api/articles/:article_id", () => {
   });
 });
 
-describe("GET /api/articles/:article_id", () => {
+xdescribe("GET /api/articles/:article_id", () => {
   test("200 :returns article by id", () => {
     const expectedArticle = {
       article_id: 12,
@@ -108,11 +108,6 @@ describe("GET /api/articles/:article_id", () => {
     return request(app)
       .get("/api/articles/12")
       .expect(200)
-
-      .then(({ body: { topic } }) => {
-        expect(topic).toEqual(article);
-
-
       .then(({ body: { article } }) => {
         expect(typeof article.article_id).toBe("number");
         expect(typeof article.title).toBe("string");
@@ -124,7 +119,7 @@ describe("GET /api/articles/:article_id", () => {
   });
 });
 
-describe("PATCH /api/articles/:article_id", () => {
+xdescribe("PATCH /api/articles/:article_id", () => {
   test("200 :patch article votes", () => {
     const updateArticleVote = { inc_votes: -100 };
 
@@ -381,7 +376,7 @@ describe("GET : /api/articles object including total comments", () => {
   });
 });
 
-describe.only("GET /api/queries(Queries)", () => {
+describe("GET /api/queries(Queries)", () => {
   test("200 : sort_by default date", () => {
     return request(app)
       .get("/api/articles?sort_by=created_at")
@@ -536,6 +531,25 @@ describe("POST /api/articles/:article_id/comments", () => {
     username: "rogersop",
     body: "Lobster Pot",
   };
+
+  test("415 : Invalid body /missing properties", () => {
+    const invalidDataBody = {
+      1: "rogersop",
+      2: "lobster Pot",
+    };
+    const missingDataBody = {
+      1: "rogersop",
+    };
+
+    return request(app)
+      .post("/api/articles/4/comments")
+      .send(invalidDataBody)
+      .expect(415)
+      .then(({ body: { message } }) => {
+        expect(message).toBe("Unsupported Data/Body sent");
+      });
+  });
+
   test("200 : send request body with username and body", () => {
     return request(app)
       .post("/api/articles/4/comments")
@@ -553,6 +567,7 @@ describe("POST /api/articles/:article_id/comments", () => {
         );
       });
   });
+
   test("422 : Invalid article id /api/articles/not-an-id/comments", () => {
     return request(app)
       .post("/api/articles/not-an-id/comments")
@@ -572,4 +587,4 @@ describe("POST /api/articles/:article_id/comments", () => {
         expect(message).toBe("Bad Request");
       });
   });
-});
+})
