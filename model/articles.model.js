@@ -1,15 +1,48 @@
 const db = require("../db/connection");
 
-exports.fetchAllArticles = () => {
-  return db
-    .query(
-      `SELECT articles.*,CAST(COUNT(comments.article_id) AS INTEGER) AS comment_count FROM comments
-  FULL OUTER JOIN articles ON articles.article_id=comments.article_id
-     GROUP BY articles.article_id ORDER BY articles.created_at DESC;`
-    )
-    .then((data) => {
-      return data.rows;
+exports.fetchAllArticles = (
+  sort_by = "created_at",
+  order_by = "desc",
+  filter_by
+) => {
+  const validSorts = [
+    "article_id",
+    "comment_count",
+    "title",
+    "author",
+    "created_at",
+    "votes",
+  ];
+  const validOrder = ["ASC", "DESC"];
+  let queryString = `SELECT articles.*,CAST(COUNT(comments.article_id) AS INTEGER) AS comment_count FROM comments
+  LEFT JOIN articles ON articles.article_id=comments.article_id
+     GROUP BY articles.article_id ORDER BY articles.${sort_by} ${order_by.toUpperCase()};`;
+
+  let queryValue = [];
+
+  if (!validSorts.includes(sort_by)) {
+    return Promise.reject({
+      status: 400,
+      message: "invalid sort request",
     });
+  } else if (!validOrder.includes(order_by.toUpperCase())) {
+    return Promise.reject({
+      status: 400,
+      message: "invalid order request",
+    });
+  }
+
+  if (filter_by) {
+    queryValue.push(filter_by);
+    queryString = `SELECT articles.article_id,articles.title,articles.author,articles.votes,articles.topic,articles.created_at,COUNT(comments.article_id)::INT AS comment_count FROM articles left JOIN comments ON comments.article_id=articles.article_id WHERE topic=$1 GROUP BY articles.article_id  ORDER BY ${sort_by} ${order_by}`;
+    return db.query(queryString, queryValue).then(({ rows }) => {
+      return rows;
+    });
+  } else {
+    return db.query(queryString).then(({ rows }) => {
+      return rows;
+    });
+  }
 };
 
 exports.fetchArticleComment = (id) => {

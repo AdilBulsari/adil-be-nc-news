@@ -4,7 +4,10 @@ const {
 } = require("../model/articles.model");
 
 exports.getAllArticles = (req, res, next) => {
-  fetchAllArticles()
+  const { sort_by } = req.query;
+  const { order_by } = req.query;
+  const { filter_by } = req.query;
+  fetchAllArticles(sort_by, order_by,filter_by)
     .then((data) => {
       res.status(200).send(data);
     })
