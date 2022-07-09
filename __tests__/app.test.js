@@ -202,6 +202,50 @@ describe("GET : /api/articles object including total comments", () => {
   });
 });
 
+describe.only("GET /api/queries(Queries)", () => {
+  test("200 : sort_by default date", () => {
+    return request(app)
+      .get("/api/articles?sort_by=created_at")
+      .expect(200)
+      .then((res) => {
+        expect(res.body).toBeSortedBy("created_at", { descending: true });
+      });
+  });
+  test("200 : sort_by article_id (default desc)", () => {
+    return request(app)
+      .get("/api/articles?sort_by=article_id")
+      .expect(200)
+      .then((res) => {
+        expect(res.body).toBeSortedBy("article_id", { descending: true });
+      });
+  });
+  test("200 : order_by desc (default)", () => {
+    return request(app)
+      .get("/api/articles?sort_by=created_at&order_by=desc")
+      .expect(200)
+      .then((res) => {
+        expect(res.body).toBeSortedBy("created_at", { descending: true });
+      });
+  });
+  test("200 : order_by asc", () => {
+    return request(app)
+      .get("/api/articles?sort_by=created_at&order_by=asc")
+      .expect(200)
+      .then((res) => {
+        expect(res.body).toBeSortedBy("created_at", { ascending: true });
+      });
+  });
+  test("200 : filter by topic", () => {
+    return request(app)
+      .get("/api/articles?filter_by=topic")
+      .expect(200)
+      .then((res) => {
+        console.log(res.body);
+        // expect(res.body).toBeSortedBy("created_at", { ascending: true });
+      });
+  });
+});
+
 describe("Ticket 9 : Get article Comment", () => {
   test("200 : Array of comment of particular article id", () => {
     const expectedCommentArray = [
