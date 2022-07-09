@@ -4,7 +4,7 @@ exports.fetchArticleById = (id) => {
   if (isNaN(Number(id))) {
     return Promise.reject({
       status: 400,
-      err: "id must be a number",
+      message: "id must be a number",
     });
   }
 
@@ -21,7 +21,7 @@ exports.fetchArticleById = (id) => {
       if (article.rowCount === 0) {
         return Promise.reject({
           status: 404,
-          err: "does not exist",
+          message: "does not exist",
         });
       }
       return article.rows[0];

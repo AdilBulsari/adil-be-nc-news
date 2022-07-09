@@ -24,7 +24,7 @@ app.get("/api/articles/:article_id/comments", getArticleComment);
 app.post("/api/articles/:article_id/comments", postCommentByArticleId);
 
 app.use("*", (req, res) => {
-  res.status(404).send({ message: "not found" });
+  res.status(404).send({ msg: "does not exist" });
 });
 
 app.use((err, req, res, next) => {
@@ -43,23 +43,5 @@ app.use((err, req, res, next) => {
   res.status(500).send({ message: "server error" });
 });
 
-app.use("*", (req, res) => {
-  res.status(404).send({ msg: "does not exist" });
-});
-
-app.use((err, req, res, next) => {
-  if (err.status) {
-    res.status(err.status).send({
-      msg: err.err,
-    });
-  } else {
-    next(err);
-  }
-});
-
-app.use((err, req, res, next) => {
-  console.log(err);
-  res.status(500).send({ msg: "Internal Server Error" });
-});
 
 module.exports = app;

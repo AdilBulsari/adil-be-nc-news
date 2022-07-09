@@ -4,13 +4,13 @@ exports.updateArticleById = (updatedArticle, article_id) => {
   if (Object.keys(updatedArticle).length === 0) {
     return Promise.reject({
       status: 415,
-      err: "empty body",
+      message: "empty body",
     });
   }
   if (isNaN(Number(article_id))) {
     return Promise.reject({
       status: 400,
-      err: "enter valid id..",
+      message: "enter valid id..",
     });
   }
 
@@ -18,7 +18,7 @@ exports.updateArticleById = (updatedArticle, article_id) => {
   if (isNaN(Number(inc_votes))) {
     return Promise.reject({
       status: 422,
-      err: "enter valid vote number",
+      message: "enter valid vote number",
     });
   }
   return db
@@ -30,7 +30,7 @@ exports.updateArticleById = (updatedArticle, article_id) => {
       if (result.rowCount === 0) {
         return Promise.reject({
           status: 404,
-          err: "does not exist",
+          message: "does not exist",
         });
       }
       return result.rows[0];

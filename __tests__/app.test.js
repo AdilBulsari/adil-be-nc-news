@@ -21,7 +21,7 @@ beforeAll(() => {
 afterAll(() => db.end());
 
 describe("App test", () => {
-  xdescribe("GET /api/topics", () => {
+  describe("GET /api/topics", () => {
     test("200 :returns topic", () => {
       const topics = [
         { slug: "mitch", description: "The man, the Mitch, the legend" },
@@ -46,7 +46,7 @@ describe("App test", () => {
   });
 });
 
-xdescribe("/api/articles/:article_id", () => {
+describe("/api/articles/:article_id", () => {
   const expectedArticle = {
     article_id: 1,
     title: "Living in the shadow of a great man",
@@ -79,7 +79,7 @@ xdescribe("/api/articles/:article_id", () => {
       .get("/api/articles/notAnID")
       .expect(400)
       .then(({ body }) => {
-        expect(body.msg).toBe("id must be a number");
+        expect(body.message).toBe("id must be a number");
       });
   });
   test("status:404, responds with an error message does not exist", () => {
@@ -87,12 +87,12 @@ xdescribe("/api/articles/:article_id", () => {
       .get("/api/articles/99999")
       .expect(404)
       .then(({ body }) => {
-        expect(body.msg).toBe("does not exist");
+        expect(body.message).toBe("does not exist");
       });
   });
 });
 
-xdescribe("GET /api/articles/:article_id", () => {
+describe("GET /api/articles/:article_id", () => {
   test("200 :returns article by id", () => {
     const expectedArticle = {
       article_id: 12,
@@ -119,7 +119,7 @@ xdescribe("GET /api/articles/:article_id", () => {
   });
 });
 
-xdescribe("PATCH /api/articles/:article_id", () => {
+describe("PATCH /api/articles/:article_id", () => {
   test("200 :patch article votes", () => {
     const updateArticleVote = { inc_votes: -100 };
 
@@ -149,7 +149,7 @@ xdescribe("PATCH /api/articles/:article_id", () => {
       .send(updateArticleVote)
       .expect(404)
       .then(({ body }) => {
-        expect(body.msg).toBe("does not exist");
+        expect(body.message).toBe("does not exist");
       });
   });
   test("status:400, responds with an error message when passed invalid id", () => {
@@ -159,7 +159,7 @@ xdescribe("PATCH /api/articles/:article_id", () => {
       .send(updateArticleVote)
       .expect(400)
       .then(({ body }) => {
-        expect(body.msg).toBe("enter valid id..");
+        expect(body.message).toBe("enter valid id..");
       });
   });
 
@@ -170,7 +170,7 @@ xdescribe("PATCH /api/articles/:article_id", () => {
       .send(updateArticleVote)
       .expect(422)
       .then(({ body }) => {
-        expect(body.msg).toBe("enter valid vote number");
+        expect(body.message).toBe("enter valid vote number");
       });
   });
 
@@ -180,7 +180,7 @@ xdescribe("PATCH /api/articles/:article_id", () => {
       .send({})
       .expect(415)
       .then(({ body }) => {
-        expect(body.msg).toBe("empty body");
+        expect(body.message).toBe("empty body");
       });
   });
 });
@@ -238,8 +238,8 @@ describe("GET : /api/articles object including total comments", () => {
     return request(app)
       .get("/api/articlezz")
       .expect(404)
-      .then(({ body: { message } }) => {
-        expect(message).toBe("not found");
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("does not exist");
       });
   });
 
