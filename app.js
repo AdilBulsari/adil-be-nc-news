@@ -2,7 +2,7 @@ const express = require("express");
 const { getTopic } = require("./controller/getTopic.controller");
 const { patchArticle } = require("./controller/patchArticle.controller");
 const { getUsers } = require("./controller/users.controller");
-
+const { getAllEndoints } = require("./controller/allendpoints.controller");
 const { getArticleById } = require("./controller/getArticle.controller");
 const {
   getAllArticles,
@@ -15,6 +15,7 @@ const {
 const app = express();
 app.use(express.json());
 
+app.get("/api", getAllEndoints);
 app.get("/api/topics", getTopic);
 
 app.patch("/api/articles/:article_id", patchArticle);
