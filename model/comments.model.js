@@ -34,6 +34,13 @@ exports.addCommentByArticleId = (article_id, commentToPost) => {
 };
 
 exports.removeCommentById = (comment_id) => {
+  console.log(comment_id);
+  if (isNaN(Number(comment_id))) {
+    return Promise.reject({
+      message: "incorrect id type passed",
+      status: 400,
+    });
+  }
   return db
     .query(`DELETE FROM comments WHERE comment_id=${comment_id};`)
     .then((deleteData) => {

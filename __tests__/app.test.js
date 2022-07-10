@@ -605,4 +605,12 @@ describe("DELETE /api/comments/:comment_id", () => {
         expect(message).toBe("does not exist");
       });
   });
+  test("400 : when passed string as id", () => {
+    return request(app)
+      .delete("/api/comments/not-an-id")
+      .expect(400)
+      .then(({ body: { message } }) => {
+        expect(message).toBe("incorrect id type passed");
+      });
+  });
 });
