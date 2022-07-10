@@ -588,8 +588,8 @@ describe("POST /api/articles/:article_id/comments", () => {
   });
 });
 
-describe.only("DELETE /api/comments/:comment_id", () => {
-  xtest("delete row from comment table when passed valid comment_id and return empty data(no content)", () => {
+describe("DELETE /api/comments/:comment_id", () => {
+  test("delete row from comment table when passed valid comment_id and return empty data(no content)", () => {
     return request(app)
       .delete("/api/comments/2")
       .expect(200)
