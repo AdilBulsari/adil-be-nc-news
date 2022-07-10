@@ -8,7 +8,10 @@ const {
   getAllArticles,
   getArticleComment,
 } = require("./controller/articles.controller");
-const { postCommentByArticleId } = require("./controller/comments.controller");
+const {
+  postCommentByArticleId,
+  deleteCommentById,
+} = require("./controller/comments.controller");
 const app = express();
 app.use(express.json());
 
@@ -23,12 +26,14 @@ app.get("/api/articles/:article_id/comments", getArticleComment);
 
 app.post("/api/articles/:article_id/comments", postCommentByArticleId);
 
+app.delete("/api/comments/:comment_id", deleteCommentById);
+
 app.use("*", (req, res) => {
   res.status(404).send({ msg: "does not exist" });
 });
 
 app.use((err, req, res, next) => {
-  // console.log(err);
+  console.log(err);
   if (err.code == "23503") {
     res.status(400).send({ message: "Bad Request" });
   }
@@ -42,6 +47,5 @@ app.use((err, req, res, next) => {
 app.use((err, req, res, next) => {
   res.status(500).send({ message: "server error" });
 });
-
 
 module.exports = app;

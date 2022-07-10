@@ -220,7 +220,7 @@ describe("/api/users", () => {
       .then(({ body: { users } }) => {
         if (users.length === 0) {
           return;
-        }else{
+        } else {
           users.forEach((user) => {
             expect(typeof user.username).toBe("string");
             expect(typeof user.avatar_url).toBe("string");
@@ -228,7 +228,6 @@ describe("/api/users", () => {
           });
           expect(users).toEqual(expectedData);
         }
-
       });
   });
 });
@@ -587,4 +586,23 @@ describe("POST /api/articles/:article_id/comments", () => {
         expect(message).toBe("Bad Request");
       });
   });
-})
+});
+
+describe.only("DELETE /api/comments/:comment_id", () => {
+  xtest("delete row from comment table when passed valid comment_id and return empty data(no content)", () => {
+    return request(app)
+      .delete("/api/comments/2")
+      .expect(200)
+      .then((res) => {
+        expect(res.body).toEqual([]);
+      });
+  });
+  test("404 : when passed invalid id number", () => {
+    return request(app)
+      .delete("/api/comments/9999")
+      .expect(404)
+      .then(({ body: { message } }) => {
+        expect(message).toBe("does not exist");
+      });
+  });
+});

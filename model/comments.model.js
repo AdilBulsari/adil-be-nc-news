@@ -32,3 +32,17 @@ exports.addCommentByArticleId = (article_id, commentToPost) => {
       return data.rows[0];
     });
 };
+
+exports.removeCommentById = (comment_id) => {
+  return db
+    .query(`DELETE FROM comments WHERE comment_id=${comment_id};`)
+    .then((deleteData) => {
+      if (deleteData.rowCount === 0) {
+        return Promise.reject({
+          message: "does not exist",
+          status: 404,
+        });
+      }
+      return deleteData.rows;
+    });
+};
