@@ -10,7 +10,7 @@
     "seed": "node ./db/seeds/run-seed.js",
     "test": "jest",
     "prepare": "husky install",
-     "seed:prod": "NODE_ENV=production DATABASE_URL=$(heroku config:get postgres://uxfhjllpgbqolt:a9a08905f782121d30513a0a3f754dc2e94744ffc35adc2236ce80e7e9dbb5d6@ec2-3-222-74-92.compute-1.amazonaws.com:5432/d4neoedajtngbu) npm run seed"
+    "seed:prod": "NODE_ENV=production DATABASE_URL=$(heroku config:get postgres://uxfhjllpgbqolt:a9a08905f782121d30513a0a3f754dc2e94744ffc35adc2236ce80e7e9dbb5d6@ec2-3-222-74-92.compute-1.amazonaws.com:5432/d4neoedajtngbu) npm run seed"
   },
   "repository": {
     "type": "git",
