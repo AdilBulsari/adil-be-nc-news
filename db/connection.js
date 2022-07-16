@@ -8,11 +8,13 @@ require("dotenv").config({
 if (!process.env.PGDATABASE && !process.env.DATABASE_URL) {
   throw new Error("PGDATABASE not set");
 }
+
+
 const config =
   ENV === 'production'
     ? {
         connectionString: process.env.DATABASE_URL,
-        ssl:process.env.DATABASE_SSL === `true`
+       ssl: process.env.DATABASE_URL ? true : false
       }
     : {};
 
