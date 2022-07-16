@@ -9,18 +9,16 @@ if (!process.env.PGDATABASE && !process.env.DATABASE_URL) {
   throw new Error("PGDATABASE not set");
 }
 
-
 const config =
   ENV === 'production'
     ? {
         connectionString: process.env.DATABASE_URL,
-        ssl: false
+       ssl: process.env.DB_ENABLE_SSL,
+      dialectOptions: {
+      ssl: process.env.DB_ENABLE_SSL && {
+      require: true
     }
-    : {
-        connectionString: process.env.DATABASE_URL,
-        ssl: {
-            rejectUnauthorized: false
-          }
-    }
-
+  }
+      }
+    : {};
 module.exports = new Pool(config);
