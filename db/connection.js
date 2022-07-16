@@ -13,10 +13,9 @@ const config =
   ENV === 'production'
     ? {
         connectionString: process.env.DATABASE_URL,
-      ssl: {
-           require: true,
-      rejectUnauthorized: false
-        }
+     ssl: {
+          rejectUnauthorized: false,
+        },
       }
     : {};
 module.exports = new Pool(config);
