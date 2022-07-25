@@ -13,8 +13,9 @@ const {
   deleteCommentById,
 } = require("./controller/comments.controller");
 const app = express();
+const cors = require('cors');
 app.use(express.json());
-
+app.use(cors());
 app.get("/api", getAllEndoints);
 app.get("/api/topics", getTopic);
 
