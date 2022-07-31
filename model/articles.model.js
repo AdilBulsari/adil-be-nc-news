@@ -16,7 +16,7 @@ exports.fetchAllArticles = (
   const validOrder = ["ASC", "DESC"];
   let queryString = `SELECT articles.*,CAST(COUNT(comments.article_id) AS INTEGER) AS comment_count FROM comments
   LEFT JOIN articles ON articles.article_id=comments.article_id
-     GROUP BY articles.article_id ORDER BY articles.${sort_by} ${order_by.toUpperCase()};`;
+     GROUP BY articles.article_id ORDER BY ${sort_by} ${order_by.toUpperCase()};`;
 
   let queryValue = [];
 

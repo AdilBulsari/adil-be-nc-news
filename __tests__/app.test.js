@@ -417,6 +417,15 @@ describe("GET /api/queries(Queries)", () => {
         // expect(res.body).toBeSortedBy("created_at", { ascending: true });
       });
   });
+  test("200 : sort by comment", () => {
+    return request(app)
+      .get("/api/articles?sort_by=comment_count")
+      .expect(200)
+      .then((res) => {
+        console.log(res.body);
+        // expect(res.body).toBeSortedBy("created_at", { ascending: true });
+      });
+  });
 });
 
 describe("Ticket 9 : Get article Comment", () => {
