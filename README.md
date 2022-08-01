@@ -1,56 +1,21 @@
-```
-You will need to create two .env files for your project: `.env.test` and `.env.development`. Into each, add `PGDATABASE=<database_name_here>`, with the correct database name for that environment (see `/db/setup.sql` for the database names).
+# Adil's Northcoders News API
 
+This project is designed to retrieve data using this API, from the Northcoders news database. The data includes news articles with comments, votes, topics and scores related to them. Please refer to the endpoints.json file in the root directory to see all the endpoints and their use.
 
-**Please ensure you work through the tickets in numerical order.**
+Alternatively you can check the hosted version of the API on heroku https://nc-news-pa.herokuapp.com/api
 
-## Git Branching and Pull Requests
+## User guide
 
-You will be working on each ticket on a new **branch**.
+The project has already a database folder with a setup.sql file to enable you set-up two databases, one for development and the other for testing. Both test and dev data are included in the data subfolder. There is also a seeds subfolder that contains the files that will enable you to seed the database by executing the npm scripts mentioned in the package.json.
 
-To create and switch to a new git branch use the command:
+If you want to use this API you will need to create two .env files for your project: .env.test and .env.development in the root directory. Into each, add PGDATABASE=<database_name_here>, with the correct database name for that environment (see /db/setup.sql for the database names).Make sure that these .env files are .gitignored. You will also need to install all the dependencies. Namely node-postgress to interact with the databases, dotenv to enable you to target a specific database and express to enable you to respond to requests to your database, and other devDepenedcies by executing npm install.
 
-```
+Then seed the databases with the script npm run setup-dbs && npm run seed
 
-git checkout -b <new branch name>
+You can use the jest library to run your tests by executing npm test
 
-```
+## Minimum versions of Node.js and Postgres needed to run the project
 
-This will create a branch and move over to that branch. (Omit the `-b` flag if you wish to switch to an already existing branch).
+Node version 18.0.0
 
-We recommend that you name the branch after the number assigned to each ticket via the header. eg. `ncnews-1`
-
-When pushing the branch to git hub ensure that you make reference to the branch you are pushing to on the remote.
-
-```
-
-git push origin <branch name>
-
-```
-
-From github you can make a pull request and share the link and ticket number via a pull request specific nchelp using the command `nchelp pr`. A tutor will swing by to review your code. Ensure that you keep your trello up to date whilst you await the PR approval. Regular `nchelp` will be available for when you need support.
-
-Once a pull request been accepted be sure to switch back to the main branch and pull down the updated changes.
-
-```
-
-git checkout main
-
-git pull origin main
-
-```
-
-You can tidy up your local branches once they have been pull into main by deleting them:
-
-```
-
-git branch -D <local branch>
-
-```
-
-## Husky
-
-To ensure we are not commiting broken code this project makes use of git hooks. Git hooks are scripts triggered during certain events in the git lifecycle. Husky is a popular package which allows us to set up and maintain these scripts. This project makes use a _pre-commit hook_. When we attempt to commit our work, the script defined in the `pre-commit` file will run. If any of our tests fail than the commit will be aborted.
-
-The [Husky documentation](https://typicode.github.io/husky/#/) explains how to configure Husky for your own project as well as creating your own custom hooks.\_
-```
+postgress version 8.7.3
