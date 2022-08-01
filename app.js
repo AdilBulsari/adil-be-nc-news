@@ -17,6 +17,7 @@ const cors = require('cors');
 app.use(express.json());
 app.use(cors());
 app.get("/api", getAllEndoints);
+
 app.get("/api/topics", getTopic);
 
 app.patch("/api/articles/:article_id", patchArticle);
