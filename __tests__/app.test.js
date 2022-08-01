@@ -413,8 +413,8 @@ describe("GET /api/queries(Queries)", () => {
       .get("/api/articles?filter_by=topic")
       .expect(200)
       .then((res) => {
-        console.log(res.body);
-        // expect(res.body).toBeSortedBy("created_at", { ascending: true });
+   
+        expect(res.body).toBeSortedBy("created_at", { ascending: true });
       });
   });
   test("200 : sort by comment", () => {
@@ -766,8 +766,8 @@ describe("DELETE /api/comments/:comment_id", () => {
         .get("/api")
         .expect(200)
         .then((res) => {
-          console.log(res)
-          // expect(res.body).toEqual(endpoints);
+       
+          expect(res.body).toEqual(endpoints);
         });
     });
   });
