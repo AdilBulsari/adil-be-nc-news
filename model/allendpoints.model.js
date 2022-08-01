@@ -1,4 +1,5 @@
-const db = require("../db/connection");
-exports.getAllEndoints = () => {
-  return db.query();
+exports.fetchJson = () => {
+  return fs.readFile("./endpoints.json", "utf-8").then((data) => {
+    return JSON.parse(data);
+  });
 };
