@@ -1,5 +1,5 @@
 const express = require("express");
-const { getTopic } = require("./controller/getTopic.controller");
+const { getTopics } = require("./controller/getTopic.controller");
 const { patchArticle } = require("./controller/patchArticle.controller");
 const { getUsers } = require("./controller/users.controller");
 const { getAllEndoints } = require("./controller/allendpoints.controller");
@@ -13,12 +13,13 @@ const {
   deleteCommentById,
 } = require("./controller/comments.controller");
 const app = express();
-const cors = require('cors');
+const cors = require("cors");
 app.use(express.json());
 app.use(cors());
+
 app.get("/api", getAllEndoints);
 
-app.get("/api/topics", getTopic);
+app.get("/api/topics", getTopics);
 
 app.patch("/api/articles/:article_id", patchArticle);
 app.get("/api/users", getUsers);
