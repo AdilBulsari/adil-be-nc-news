@@ -34,7 +34,6 @@ exports.addCommentByArticleId = (article_id, commentToPost) => {
 };
 
 exports.removeCommentById = (comment_id) => {
-  console.log(comment_id);
   if (isNaN(Number(comment_id))) {
     return Promise.reject({
       message: "incorrect id type passed",

@@ -6,7 +6,6 @@ const {
 exports.postCommentByArticleId = (req, res, next) => {
   const { article_id } = req.params;
   const commentToPost = req.body;
-  console.log(article_id);
 
   addCommentByArticleId(article_id, commentToPost)
     .then((postedComment) => {
