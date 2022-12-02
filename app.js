@@ -14,7 +14,6 @@ const {
 } = require("./controller/comments.controller");
 const app = express();
 const cors = require("cors");
-const serverless = require("serverless-http");
 
 app.use(express.json());
 app.use(cors());
@@ -54,4 +53,3 @@ app.use((err, req, res, next) => {
 });
 
 module.exports = app;
-module.exports.handler = serverless(app);

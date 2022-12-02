@@ -1,4 +1,3 @@
 [build]
+   functions="/app"
 
-functions="functions"
-“force = true”
