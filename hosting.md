@@ -1,160 +1,183 @@
-# Hosting a PSQL DB using Heroku
+# Hosting a PSQL DB using ElephantSQL and Cyclic
 
-**\*\* This file is only relevant for an advanced task. You can ignore this until then! \*\***
+​
+There are many ways to host APIs online. In these notes we will be using [ElephantSQL](https://www.elephantsql.com/) to create an online location for your database, and [Cyclic](https://www.cyclic.sh/) to host the API.
+​
 
-There are many ways to host applications like the one you have created. One of these solutions is Heroku. Heroku provides a service that you can push your code to and it will build, run and host it. Heroku also allows for easy database integration. Their [documentation](https://devcenter.heroku.com/articles/getting-started-with-nodejs) is excellent, so take a look at that. This document is essentially a more condensed, specific version of the steps described in the Heroku docs.
+## 1. Make a GitHub repo for your API
 
-## 1. Install the Heroku CLI
+​
+Before you do this, please make your own public repo so that you can share your project as part of your portfolio by doing the following:
+​
 
-On macOS:
-
-```bash
-brew tap heroku/brew && brew install heroku
-```
-
-...or Ubuntu:
-
-```bash
-sudo snap install --classic heroku
-```
-
-## 2. Create a Heroku App
-
-Log into Heroku using their command line interface:
+1. Create a new _public_ GitHub repository, and do **not** initialise the project with a readme, .gitignore or license.
+2. From your _local_ copy of your repository, push your code to your new respository using the following commands:
+   ​
 
 ```bash
-heroku login
+git remote set-url origin YOUR_NEW_REPO_URL_HERE
+git branch -M main
+git push -u origin main
 ```
 
-Create an app in an active git directory. Doing this in the folder where your server exists is a good start, as this is what you will be hosting.
+​
 
-```bash
-heroku create your-app-name
+## 2. Set up an instance of your database using ElephantSQL
+
+​
+Create an account on [ElephantSQL](https://www.elephantsql.com/), or you can link a GitHub or a Google account to log in.
+​
+You will need to create a team, which you can name whatever you like. You'll need to answer "Yes" to the Terms of Service and GDPR statements, and provide them with an email address.
+​
+Once you have created a team, navigate to "Create a New Instance", which you can also name whatever you like - we suggest something appropriate to the database you're creating, make sure you choose the free "Tiny Turtle" plan 🐢, then click "Select Region".
+​
+_There are options to add credit card and billing info, ignore them, you don't need to!_
+​
+Select any region, this will be the location of your hosted server, so it may be slightly beneficial to choose a location closer to you. Click "Review", then "Create Instance".
+​
+Now you have your server instance, click on it's name so you're on the "Details" page.
+​
+We will need the **URL** for the next part (this will start with "postgres://..." ). Copy it to your clipboard for now, or keep this tab open for the next step!
+​
+
+## 3. Add your production .env file to your local repo
+
+​
+We will need to provide an environment variable for our production DB called `DATABASE_URL`, it will provide the online location of the DB you have just created.
+​
+Add a new .env file called `.env.production`.
+​
+In it replace the `<URL>` with the value you got in the previous step.
+​
+
+```
+DATABASE_URL=<URL>
 ```
 
-Here `your-app-name` should be the name you want to give your application. If you don't specify an app name, you'll get a random one which can sometimes be a bit iffy.
+​
 
-This command will both create an app on Heroku for your account. It will also add a new `remote` to your git repository.
-Check this by looking at your git remotes:
+## 4. Update your connection pool
 
-```bash
-git remote -v
+​
+At the top of the file that creates and exports your connection pool (this may be called something like `connection.js`), assign the value of the NODE_ENV to a variable (you may have already created this variable):
+​
+
+```js
+const ENV = process.env.NODE_ENV || "development";
 ```
 
-## 3. Push Your code up to Heroku
+​
+It is important to check that we have either the development/test PGDATABASE variable or the production DATABASE_URL. If both are missing from the `process.env`, then throw an error.
+​
 
-```bash
-git push heroku main
+```js
+if (!process.env.PGDATABASE && !process.env.DATABASE_URL) {
+  throw new Error("PGDATABASE or DATABASE_URL not set");
+}
 ```
 
-## 4. Creating a Hosted Database
+​
+Next, add a `config` variable. If the `ENV` is "production", this variable should hold a config object, containing the `DATABASE_URL` at the `connectionString` key. This allows you to connect to the hosted database from your local machine.
+​
 
-Go to the heroku site and log in.
-
-- Select your application
-- `Configure Add-ons`
-- Choose `Heroku Postgres`
-
-The free tier will be adequate for our purposes. This will provide you with a `postgreSQL` pre-created database!
-
-Check that the database exists. Click `settings` on it, and view the credentials. Keep an eye on the URI. Don't close this yet!
-
-## 5. Seeding the Production Database
-
-Check that your database's url is added to the environment variables on Heroku:
-
-```bash
-heroku config:get DATABASE_URL
+```js
+const ENV = process.env.NODE_ENV || "development";
+// ...
+const config =
+  ENV === "production"
+    ? {
+        connectionString: process.env.DATABASE_URL,
+      }
+    : {};
+​
+module.exports = new Pool(config);
+// ...
 ```
 
-If you are in your app's directory, and the database is correctly linked as an add on to Heroku, it should display a DB URI string that is exactly the same as the one in your credentials.
+​
 
-In your `package.json`, add the following keys to the scripts:
+## 5. Add a listen file
+
+​
+If you haven't already, we will need to add a `listen.js` file at the top level of our folder, which we will provide to our hosting provider so they know how to get our app started.
+​
+
+```js
+const app = require("./app.js");
+const { PORT = 9090 } = process.env;
+​
+app.listen(PORT, () => console.log(`Listening on ${PORT}...`));
+```
+
+​
+
+## 6. Update your package.json
+
+​
+In your `package.json` file, set your "main" key to your listen.js file. Missing this will result in an error from our hosting provider, as it won't know where to enter the app.
+​
+
+```json
+"main": "listen.js"
+```
+
+​
+Add the following keys to the scripts:
+​
 
 ```json
 {
   "scripts": {
-    "seed:prod": "NODE_ENV=production DATABASE_URL=$(heroku config:get DATABASE_URL) npm run seed"
+    "start": "node listen.js",
+    "seed-prod": "NODE_ENV=production npm run seed"
   }
 }
 ```
 
-This will establish an environment variable called `DATABASE_URL`, and set it to whatever heroku provides as your database's URL. It is essential that you do this as the database URL may change! This deals with a lack of predictability on heroku's end.
+​
+Also make sure your `dotenv` and `pg` dependancies are in your _dependancies_, not your _devDependanies_, as Cyclic will need access to these libraries.
+​
+_If you haven't already, push all your changes to GitHub!_
+​
 
-At the top of your `connection.js`, assign the value of the NODE_ENV to a variable (you may have already created this variable):
+## 7. Seed your online database
 
-```js
-const ENV = process.env.NODE_ENV || 'development';
-```
-
-It is important to check that we have either the development/test PGDATABASE variable or the production DATABASE_URL. If both are missing from the `process.env`, then throw an error.
-
-```js
-if (!process.env.PGDATABASE && !process.env.DATABASE_URL) {
-  throw new Error('PGDATABASE or DATABASE_URL not set');
-}
-```
-
-Next, add a `config` variable. If the `ENV` is production, this variable should hold a config object, containing the `DATABASE_URL` at the `connectionString` key, along with an additional `ssl.rejectUnauthorized` property set to false. This allows you to connect to the hosted database from your local machine.
-
-```js
-const ENV = process.env.NODE_ENV || 'development';
-// ...
-const config =
-  ENV === 'production'
-    ? {
-        connectionString: process.env.DATABASE_URL,
-        ssl: {
-          rejectUnauthorized: false,
-        },
-      }
-    : {};
-
-module.exports = new Pool(config);
-
-// ...
-```
-
-Now, **run the seed prod script** that you added to your `package.json` earlier:
+​
+Your `package.json` should have a `seed-prod` script (if it doesn't, check the previous step).
+​
+**Run the seed-prod script**
+​
 
 ```bash
-npm run seed:prod
+npm run seed-prod
 ```
 
-It should check whether you're in production, and if you are, it should connect to the production database. Otherwise it will connect to the test or development database specified in your (`.gitignore`'d) `.env` files.
+​
+This script should check whether you're in production, and if you are, it should connect to the production database. If you have other .env files (you might not!), leave them as they are.
+​
+You can test if this has worked by going to the "Browser" section in your ElephantSQL [instance's](https://customer.elephantsql.com/instance) control panel. Here you can add queries, just make sure not to try out any that might break your database! Stick to `SELECT`s, rather than `DELETE`s or `POST`s.
+​
 
-## 7. Use Heroku's PORT
+## 8. Get your API hosted using Cyclic
 
-In `listen.js`, make sure you take the PORT off the environment object if it's provided. This is because heroku will provide a port if in production.
+​
+Sign up to [Cyclic](https://www.cyclic.sh/), using your GitHub account. Once you're signed up, click on the "Deploy" button.
+​
+Navigate to the "Link Your Own" tab, and search the repositories for your repo. Once you've selected it press "Connect".
+​
+It will then deploy your site on a console, hopefully with no errors...
+​
+After some confetti, you will have the option to provide some Environment Variables, either by clicking on the "environment variables console" link in the red box below the console, or in the "Variables" section of the app's Cyclic dashboard.
+​
+It will ask for the environment variables (which it may suggest, or you may need to add yourself using the "Add variable" button).
+​
 
-```js
-const { PORT = 9090 } = process.env;
-
-app.listen(PORT, () => console.log(`Listening on ${PORT}...`));
-```
-
-## 8. Add a start script
-
-Make sure your package.json has this as a start script:
-
-```json
-"start": "node listen.js",
-```
-
-Commit your changes, and push to heroku main.
-
-```bash
-git push heroku main
-```
-
-## 9. Review Your App
-
-```bash
-heroku open
-```
-
-Any issues should be debugged with:
-
-```bash
-heroku logs --tail
-```
+1. Set `DATABASE_URL` to your database's URL (the same one you put in your `.env.production`).
+2. Set `NODE_ENV` to the string "production" (you won't need to add the quotes).
+3. Press "Save".
+   ​
+   It should provide you with a link to your new hosted app, in the top right of the screen.
+   ​
+   Due to Cyclic's auto-generation feature - your url might start it's life as something a bit wacky (along the lines of `easy-lion-cardigan`) - if you would like to change this to something more relevant, you can do so by heading to the `Environments` section and editing the `Custom Subdomain`. You will need to re-deploy your app for this change to take effect (it might take a little while for things to update).
+   ​
+   Check your endpoints are working, and you're good to go! 🎉
