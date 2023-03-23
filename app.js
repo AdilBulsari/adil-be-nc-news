@@ -15,8 +15,8 @@ const {
 const app = express();
 const cors = require("cors");
 
-app.use(express.json());
-app.use(cors());
+app.use(express.json()); // to parse incoming request with json payload
+app.use(cors()); // middleware for web security to make API call
 
 app.get("/api", getAllEndoints);
 

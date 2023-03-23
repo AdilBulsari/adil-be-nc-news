@@ -218,9 +218,7 @@ describe("/api/users", () => {
       .get("/api/users")
       .expect(200)
       .then(({ body: { users } }) => {
-        if (users.length === 0) {
-          return;
-        } else {
+        {
           users.forEach((user) => {
             expect(typeof user.username).toBe("string");
             expect(typeof user.avatar_url).toBe("string");
