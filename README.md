@@ -1,4 +1,4 @@
-# Adil's Northcoders News API
+# Northcoders News API
 
 This project is designed to retrieve data using this API, from the Northcoders news database. The data includes news articles with comments, votes, topics and scores related to them. Please refer to the endpoints.json file in the root directory to see all the endpoints and their use.
 
